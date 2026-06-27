@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Video</title>
+<style>
+  /* ===== CONFIGURATION — edit these ===== */
+  :root {
+    --video-url: "https://www.w3schools.com/html/mov_bbb.mp4"; /* <-- replace with your GitHub raw URL */
+    --video-title: "Me at the zoo";                            /* <-- replace with your title */
+  }
+  /* ====================================== */
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    scrollbar-width: auto;
+    scrollbar-color: #c0bdb5 #f0ede6;
+  }
+  ::-webkit-scrollbar { width: 17px; }
+  ::-webkit-scrollbar-track {
+    background: #f0ede6;
+    border-left: 1px solid #808080;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c0bdb5;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    min-height: 30px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #b0ada5; }
+  ::-webkit-scrollbar-button:single-button {
+    background: #c0bdb5;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    height: 17px;
+    width: 17px;
+    display: block;
+  }
+  ::-webkit-scrollbar-button:single-button:vertical:decrement {
+    background-color: #c0bdb5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpolygon points='4,0 8,5 0,5' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  ::-webkit-scrollbar-button:single-button:vertical:increment {
+    background-color: #c0bdb5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpolygon points='0,0 8,0 4,5' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  ::-webkit-scrollbar-button:single-button:active {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+  ::-webkit-scrollbar-corner { background: #c0bdb5; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    background: #e8e5de url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='2' height='2' fill='%23d8d5ce' opacity='0.4'/%3E%3C/svg%3E");
+    color: #111;
+    min-height: 200vh;
+    padding-bottom: 200px;
+  }
+
+  /* Top nav bar */
+  #topbar {
+    background: linear-gradient(to bottom, #e8e5de, #c8c4bc);
+    border-bottom: 2px solid #999;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  #topbar .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1;
+  }
+  #topbar .logo .logo-main {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: "Arial Black", Arial, sans-serif;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  #topbar .logo .logo-main .gwen { color: #cc0000; }
+  #topbar .logo .logo-main .tube {
+    color: #fff;
+    background: #cc0000;
+    padding: 0 4px 1px;
+    border-radius: 3px;
+    margin-left: 1px;
+  }
+  #topbar .logo .logo-sub {
+    font-size: 9px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    font-style: italic;
+  }
+  #topbar input[type=text] {
+    flex: 1;
+    max-width: 320px;
+    height: 22px;
+    border: 1px solid #999;
+    border-radius: 0;
+    font-size: 12px;
+    padding: 2px 6px;
+    background: #fff;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.15);
+  }
+  #topbar button {
+    height: 22px;
+    padding: 0 10px;
+    background: linear-gradient(to bottom, #f0ede6, #d0ccc4);
+    border: 1px solid #888;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .nav-links { display: flex; gap: 10px; font-size: 12px; }
+  .nav-links a { color: #1a5276; text-decoration: underline; cursor: pointer; }
+
+  /* Page layout */
+  #page { max-width: 980px; margin: 12px auto; padding: 0 12px; display: flex; gap: 14px; }
+  #main { flex: 1; min-width: 0; }
+  #sidebar { width: 200px; flex-shrink: 0; }
+
+  /* Video box */
+  #video-box {
+    background: #fff;
+    border: 1px solid #bbb;
+    padding: 6px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  #video-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 6px;
+    font-family: Arial, sans-serif;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+  #video-wrapper {
+    background: #000;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9/16;
+    max-height: 70vh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #main-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+
+  /* Controls bar */
+  #controls {
+    background: linear-gradient(to bottom, #d8d5ce, #b8b5ae);
+    border: 1px solid #888;
+    border-top: none;
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .ctrl-btn {
+    width: 22px; height: 22px;
+    background: linear-gradient(to bottom, #e8e5de, #c4c0b8);
+    border: 1px solid #888;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: #333;
+    flex-shrink: 0;
+  }
+  .ctrl-btn:hover { background: linear-gradient(to bottom, #f0ede6, #d0ccc4); }
+  .ctrl-btn:active { background: linear-gradient(to bottom, #c4c0b8, #e8e5de); }
+  .ctrl-btn svg { width: 12px; height: 12px; fill: #333; }
+
+  #scrubber {
+    flex: 1;
+    height: 10px;
+    -webkit-appearance: none;
+    background: linear-gradient(to right, #888 0%, #888 0%, #d0ccc4 0%);
+    border: 1px solid #888;
+    border-radius: 1px;
+    cursor: pointer;
+    min-width: 0;
+  }
+  #scrubber::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 16px;
+    background: linear-gradient(to bottom, #e8e5de, #b0ada5);
+    border: 1px solid #777;
+    border-radius: 1px;
+    cursor: pointer;
+  }
+  #scrubber::-moz-range-thumb {
+    width: 12px; height: 16px;
+    background: linear-gradient(to bottom, #e8e5de, #b0ada5);
+    border: 1px solid #777;
+    border-radius: 1px;
+    cursor: pointer;
+  }
+
+  #time-display {
+    font-size: 11px;
+    color: #333;
+    background: #2a2a2a;
+    color: #0f0;
+    padding: 1px 5px;
+    font-family: "Courier New", monospace;
+    border: 1px inset #555;
+    min-width: 80px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  #vol-slider {
+    width: 60px;
+    height: 10px;
+    -webkit-appearance: none;
+    background: linear-gradient(to right, #888 70%, #d0ccc4 70%);
+    border: 1px solid #888;
+    border-radius: 1px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  #vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 14px;
+    background: linear-gradient(to bottom, #e8e5de, #b0ada5);
+    border: 1px solid #777;
+    border-radius: 1px;
+  }
+
+  .vol-icon { font-size: 13px; color: #444; flex-shrink: 0; }
+
+  /* Info section */
+  #info-bar {
+    background: #f5f3ee;
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 8px 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    font-size: 12px;
+  }
+  #info-bar .info-col { flex: 1; min-width: 120px; }
+  .info-label { color: #666; font-size: 11px; }
+  .info-val { color: #1a5276; }
+  .added-date { font-size: 12px; color: #333; }
+
+  /* Stars */
+  .stars { color: #f90; font-size: 16px; letter-spacing: 1px; }
+  .star-row { display: flex; align-items: center; gap: 6px; }
+  .star-count { font-size: 11px; color: #666; }
+
+  /* Action buttons */
+  .action-btn {
+    display: inline-block;
+    padding: 3px 10px;
+    background: linear-gradient(to bottom, #f5f3ee, #ddd9d0);
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    font-size: 11px;
+    color: #333;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 2px;
+  }
+  .action-btn:hover { background: linear-gradient(to bottom, #fff, #e8e5de); }
+
+  /* Tags */
+  .tags { margin: 6px 0; }
+  .tag {
+    display: inline-block;
+    background: #e0eaf5;
+    border: 1px solid #9ab;
+    color: #1a5276;
+    font-size: 11px;
+    padding: 1px 6px;
+    margin: 2px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  /* Comments */
+  #comments-section {
+    background: #fff;
+    border: 1px solid #bbb;
+    margin-top: 10px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+  }
+  #comments-section h3 {
+    background: linear-gradient(to bottom, #e8e5de, #c8c4bc);
+    border-bottom: 1px solid #aaa;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #333;
+  }
+  #comment-form { padding: 10px; border-bottom: 1px solid #ddd; background: #f9f7f3; }
+  #comment-form input, #comment-form textarea {
+    width: 100%;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    border: 1px solid #aaa;
+    padding: 4px 6px;
+    background: #fff;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+    margin-bottom: 6px;
+    display: block;
+    border-radius: 0;
+  }
+  #comment-form textarea { height: 60px; resize: vertical; }
+  #post-btn {
+    padding: 4px 16px;
+    background: linear-gradient(to bottom, #f0ede6, #c8c4bc);
+    border: 1px solid #888;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  #post-btn:hover { background: linear-gradient(to bottom, #fff, #ddd); }
+
+  #comments-list { padding: 0; }
+  .comment {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ececec;
+    font-size: 12px;
+  }
+  .comment:nth-child(even) { background: #f9f7f3; }
+  .comment-header { display: flex; gap: 8px; align-items: baseline; margin-bottom: 3px; }
+  .comment-user { font-weight: bold; color: #1a5276; font-size: 12px; }
+  .comment-time { font-size: 11px; color: #999; }
+  .comment-text { color: #333; line-height: 1.5; }
+  #comment-count { font-size: 12px; color: #666; padding: 6px 10px; border-bottom: 1px solid #ddd; background: #f0ede6; }
+
+  /* Sidebar */
+  .sidebar-header {
+    background: linear-gradient(to bottom, #d4d0c8, #b8b5ae);
+    border: 1px solid #999;
+    border-bottom: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+  }
+  .sidebar-box {
+    background: #fff;
+    border: 1px solid #bbb;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+  .sidebar-item {
+    padding: 6px 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    display: flex;
+    gap: 6px;
+  }
+  .sidebar-item:hover { background: #f0ede6; }
+  .sidebar-thumb {
+    width: 60px;
+    height: 40px;
+    background: #333;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .sidebar-meta { font-size: 11px; color: #666; }
+  .sidebar-title { font-size: 11px; color: #1a5276; font-weight: bold; }
+
+  .subscribe-btn {
+    background: #c00;
+    color: #fff;
+    border: 1px solid #900;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 2px;
+    display: inline-block;
+    margin: 4px 0;
+  }
+
+  #views-bar {
+    font-size: 11px;
+    color: #666;
+    padding: 4px 10px 6px;
+    background: #f5f3ee;
+    border-top: 1px solid #e0ddd5;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  #views-bar span b { color: #333; }
+
+  #no-comments { padding: 12px 10px; color: #999; font-style: italic; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div class="logo">
+    <div class="logo-main"><span class="gwen">Gwen</span><span class="tube">Tube</span></div>
+    <div class="logo-sub">Broadcast Gwen ™</div>
+  </div>
+  <input type="text" placeholder="Search" />
+  <button>Search</button>
+  <div class="nav-links">
+    <a>Home</a>
+    <a>Videos</a>
+    <a>Channels</a>
+    <a>Sign In</a>
+  </div>
+</div>
+
+<div id="page">
+  <div id="main">
+    <!-- Video player -->
+    <div id="video-box">
+      <div id="video-title">best of my life</div>
+      <div id="video-wrapper">
+        <video id="main-video" preload="metadata">
+          <source id="video-src" src="https://github.com/lilah-sciaky-45/ball-out/releases/download/v1.0/GwenRF20.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+
+      <!-- Controls -->
+      <div id="controls">
+        <!-- Play/Pause -->
+        <div class="ctrl-btn" id="play-btn" title="Play/Pause">
+          <svg viewBox="0 0 12 12" id="play-icon"><polygon points="2,1 11,6 2,11" fill="#333"/></svg>
+        </div>
+        <!-- Prev -->
+        <div class="ctrl-btn" title="Previous">
+          <svg viewBox="0 0 12 12"><polygon points="1,6 6,1 6,11" fill="#333"/><rect x="6" y="1" width="2" height="10" fill="#333"/></svg>
+        </div>
+        <!-- Next -->
+        <div class="ctrl-btn" title="Next">
+          <svg viewBox="0 0 12 12"><polygon points="11,6 6,1 6,11" fill="#333"/><rect x="4" y="1" width="2" height="10" fill="#333"/></svg>
+        </div>
+        <!-- Scrubber -->
+        <input type="range" id="scrubber" min="0" max="100" value="0" step="0.1">
+        <!-- Time -->
+        <div id="time-display">0:00 / 0:00</div>
+        <!-- Volume icon -->
+        <span class="vol-icon">&#128264;</span>
+        <!-- Volume -->
+        <input type="range" id="vol-slider" min="0" max="1" step="0.05" value="0.7">
+        <!-- Fullscreen -->
+        <div class="ctrl-btn" id="fs-btn" title="Fullscreen">
+          <svg viewBox="0 0 12 12"><rect x="1" y="1" width="4" height="4" fill="none" stroke="#333" stroke-width="1.5"/><rect x="7" y="7" width="4" height="4" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Views / actions -->
+      <div id="views-bar">
+        <span>Views: <b id="view-count">49,345</b></span>
+        <span>Comments: <b id="cmt-count-top">0</b></span>
+        <span>Favorited: <b>107 times</b></span>
+        <span>Added: <b id="added-date">—</b></span>
+      </div>
+
+      <!-- Info bar -->
+      <div id="info-bar">
+        <div class="info-col">
+          <div class="added-date">From <span class="info-val">camillethecarpenter</span></div>
+          <div style="margin: 4px 0;"><span class="subscribe-btn">&#10003; SUBSCRIBE</span></div>
+          <div class="star-row">
+            <span class="stars" id="star-display">&#9733;&#9733;&#9733;&#9734;&#9734;</span>
+            <span class="star-count" id="star-count-lbl">411 ratings</span>
+          </div>
+          <div style="margin-top: 4px;">
+            <span class="action-btn">&#128190; Save to Favorites</span>
+            <span class="action-btn">&#128101; Add to Groups</span>
+            <span class="action-btn">&#9654; Post Video</span>
+            <span class="action-btn" style="color:#c00;">&#9873; Flag</span>
+          </div>
+        </div>
+        <div class="info-col">
+          <div style="margin-bottom:6px;"><b>Category</b> <span class="info-val">Comedy</span></div>
+          <div class="tags">
+            <b>Tags</b>
+            <span class="tag">Gwen</span>
+            <span class="tag">best-of-Oregon</span>
+            <span class="tag">crab</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <div id="comments-section">
+      <h3>Comments &amp; Responses</h3>
+      <div id="comment-count"><b id="cmt-count-label">0</b> Comments</div>
+      <div id="comment-form">
+        <input type="text" id="name-input" placeholder="Your name (or nickname)" maxlength="40" />
+        <textarea id="comment-input" placeholder="Post a comment..."></textarea>
+        <button id="post-btn">Post Comment</button>
+      </div>
+      <div id="comments-list">
+        <div id="no-comments">No comments yet. Be the first!</div>
+      </div>
+    </div>
+
+    <!-- Extra padding for scroll -->
+    <div style="height: 400px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px; margin-top: 20px;">
+      — end of page —
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div class="sidebar-header">Related Videos</div>
+    <div class="sidebar-box">
+      <div class="sidebar-item"><div class="sidebar-thumb">🏃‍♀️</div><div><div class="sidebar-title">marathon poop</div><div class="sidebar-meta">2:04 · camillethecarpenter</div></div></div>
+      <div class="sidebar-item"><div class="sidebar-thumb">👟</div><div><div class="sidebar-title">poop on my sneaker</div><div class="sidebar-meta">1:13 · camillethecarpenter</div></div></div>
+      <div class="sidebar-item"><div class="sidebar-thumb">🚽</div><div><div class="sidebar-title">accident in porta-potty</div><div class="sidebar-meta">3:47 · camillethecarpenter</div></div></div>
+      <div class="sidebar-item"><div class="sidebar-thumb">🪠</div><div><div class="sidebar-title">toilet mistake</div><div class="sidebar-meta">0:58 · camillethecarpenter</div></div></div>
+      <div class="sidebar-item"><div class="sidebar-thumb">😌</div><div><div class="sidebar-title">feeling better</div><div class="sidebar-meta">4:22 · camillethecarpenter</div></div></div>
+    </div>
+    <div class="sidebar-header">About the Video</div>
+    <div class="sidebar-box" style="padding: 8px;">
+      <div style="font-size:11px; color:#555; line-height:1.6;">
+        <b>Added:</b> April 23, 2005<br>
+        <b>From:</b> camillethecarpenter<br>
+        <b>Category:</b> Comedy<br>
+        <b>Duration:</b> 0:18<br>
+        <hr style="border:none;border-top:1px solid #ddd;margin:6px 0;">
+        The first video uploaded to GwenTube.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const vid = document.getElementById('main-video');
+const scrubber = document.getElementById('scrubber');
+const timeDisp = document.getElementById('time-display');
+const playBtn = document.getElementById('play-btn');
+const playIcon = document.getElementById('play-icon');
+const volSlider = document.getElementById('vol-slider');
+const fsBtn = document.getElementById('fs-btn');
+
+const PAUSE_ICON = '<polygon points="2,1 5,1 5,11 2,11" fill="#333"/><polygon points="7,1 10,1 10,11 7,11" fill="#333"/>';
+const PLAY_ICON = '<polygon points="2,1 11,6 2,11" fill="#333"/>';
+
+function fmt(s) {
+  s = Math.floor(s || 0);
+  const m = Math.floor(s/60), sec = s%60;
+  return m+':'+(sec<10?'0':'')+sec;
+}
+
+vid.addEventListener('timeupdate', () => {
+  const pct = vid.duration ? (vid.currentTime/vid.duration)*100 : 0;
+  scrubber.value = pct;
+  scrubber.style.background = `linear-gradient(to right, #888 ${pct}%, #d0ccc4 ${pct}%)`;
+  timeDisp.textContent = fmt(vid.currentTime)+' / '+fmt(vid.duration);
+});
+
+vid.addEventListener('play', () => { playIcon.innerHTML = PAUSE_ICON; });
+vid.addEventListener('pause', () => { playIcon.innerHTML = PLAY_ICON; });
+vid.addEventListener('ended', () => { playIcon.innerHTML = PLAY_ICON; });
+
+playBtn.addEventListener('click', () => { vid.paused ? vid.play() : vid.pause(); });
+
+scrubber.addEventListener('input', () => {
+  if(vid.duration) vid.currentTime = (scrubber.value/100)*vid.duration;
+});
+
+volSlider.value = 0.7;
+vid.volume = 0.7;
+volSlider.addEventListener('input', () => {
+  vid.volume = volSlider.value;
+  volSlider.style.background = `linear-gradient(to right, #888 ${volSlider.value*100}%, #d0ccc4 ${volSlider.value*100}%)`;
+});
+volSlider.style.background = 'linear-gradient(to right, #888 70%, #d0ccc4 70%)';
+
+fsBtn.addEventListener('click', () => {
+  const wrapper = document.getElementById('video-wrapper');
+  if(document.fullscreenElement) document.exitFullscreen();
+  else wrapper.requestFullscreen && wrapper.requestFullscreen();
+});
+
+/* ---- Comments with persistent storage ---- */
+const STORAGE_KEY = 'retro_video_comments_v1';
+
+async function loadComments() {
+  try {
+    const r = await window.storage.get(STORAGE_KEY);
+    return r ? JSON.parse(r.value) : [];
+  } catch(e) { return []; }
+}
+
+async function saveComments(arr) {
+  try { await window.storage.set(STORAGE_KEY, JSON.stringify(arr)); } catch(e) {}
+}
+
+function renderComments(arr) {
+  const list = document.getElementById('comments-list');
+  const noC = document.getElementById('no-comments');
+  if(!arr.length) {
+    noC.style.display='block'; list.innerHTML=''; list.appendChild(noC); return;
+  }
+  noC.style.display='none';
+  list.innerHTML = arr.map(c => `
+    <div class="comment">
+      <div class="comment-header">
+        <span class="comment-user">${esc(c.user)}</span>
+        <span class="comment-time">${c.time}</span>
+      </div>
+      <div class="comment-text">${esc(c.text)}</div>
+    </div>`).join('');
+  const n = arr.length;
+  document.getElementById('cmt-count-label').textContent = n;
+  document.getElementById('cmt-count-top').textContent = n;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let comments = [];
+loadComments().then(arr => { comments = arr; renderComments(arr); });
+
+document.getElementById('post-btn').addEventListener('click', async () => {
+  const name = document.getElementById('name-input').value.trim() || 'Anonymous';
+  const text = document.getElementById('comment-input').value.trim();
+  if(!text) return;
+  const now = new Date();
+  const timeStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  comments.push({ user: name, text, time: timeStr });
+  await saveComments(comments);
+  renderComments(comments);
+  document.getElementById('comment-input').value = '';
+  document.getElementById('name-input').value = '';
+  document.getElementById('comments-list').scrollIntoView({behavior:'smooth'});
+});
+
+/* Added date */
+document.getElementById('added-date').textContent = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+/* Star rating interaction */
+const starDisp = document.getElementById('star-display');
+const stars = ['&#9733;','&#9733;','&#9733;','&#9733;','&#9733;'];
+let userRating = 3;
+starDisp.style.cursor = 'pointer';
+starDisp.addEventListener('mousemove', e => {
+  const w = starDisp.offsetWidth, x = e.offsetX;
+  const hov = Math.ceil((x/w)*5)||1;
+  starDisp.innerHTML = stars.slice(0,hov).join('')+'&#9734;'.repeat(5-hov);
+});
+starDisp.addEventListener('mouseleave', () => {
+  starDisp.innerHTML = stars.slice(0,userRating).join('')+'&#9734;'.repeat(5-userRating);
+});
+starDisp.addEventListener('click', e => {
+  const w = starDisp.offsetWidth, x = e.offsetX;
+  userRating = Math.ceil((x/w)*5)||1;
+  starDisp.innerHTML = stars.slice(0,userRating).join('')+'&#9734;'.repeat(5-userRating);
+});
+</script>
+</body>
+</html>
